@@ -1,9 +1,0 @@
-python==3.9.12
-flask==2.2.2
-urllib
-werkzeug
-tensorflow
-face_recognition
-cv2
-numpy
-imageio

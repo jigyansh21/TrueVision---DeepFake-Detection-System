@@ -7,6 +7,7 @@ __pycache__/
 # Virtual environments
 venv/
 .venv/
+venv_*/
 env/
 .env/
 Deploy/venv_py38/
@@ -22,8 +23,26 @@ Thumbs.db
 *.log
 *.tmp
 
-# Project-specific generated files
-Project_Report.pdf
+# Binary packages (wheel files)
+*.whl
+**/whl packages/
+**/*.whl
+
+# Test/upload files
 static/uploads/
 Deploy/static/uploads/
+**/uploads/*.mp4
+**/uploads/*.avi
+**/uploads/*.mov
+
+# Project-specific generated files
+Project_Report.pdf
+
+# Duplicate/typo files
+requirments.txt
+requirements_*.txt
+!requirements.txt
+
+# Minimal placeholder files
+**/desc
 
