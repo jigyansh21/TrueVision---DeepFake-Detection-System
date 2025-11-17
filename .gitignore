@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+Deploy/venv_py38/
+Deploy/Deploy/venv_py38/
+
+# IDE / OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build outputs
+*.log
+*.tmp
+
+# Project-specific generated files
+Project_Report.pdf
+static/uploads/
+Deploy/static/uploads/
+

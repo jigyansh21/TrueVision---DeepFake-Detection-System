@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepFake Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>DeepFake Detection</h1>
+                </div>
+                <p class="subtitle">AI-Powered Video Authenticity Verification</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <div class="card upload-section">
+                <div class="card-header">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Upload Video</h2>
+                    <p>Select a video file to analyze for deepfake detection</p>
+                </div>
+                
+                <!-- Flash Messages -->
+                <div id="message-container" class="message-container">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <ul>
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- Video Preview -->
+                {% if filename %}
+                <div class="video-preview">
+                    <div class="video-wrapper">
+                        <video id="preview-video" controls>
+                            <source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="video-overlay">
+                            <i class="fas fa-video"></i>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Upload Form -->
+                <form method="post" action="/" enctype="multipart/form-data" class="upload-form" id="uploadForm">
+                    <div class="file-input-wrapper">
+                        <input type="file" name="file" id="fileInput" accept="video/*" required>
+                        <label for="fileInput" class="file-label">
+                            <i class="fas fa-file-video"></i>
+                            <span class="file-text">Choose Video File</span>
+                            <span class="file-hint">MP4, AVI, MOV (Max 16MB)</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Video</span>
+                    </button>
+                </form>
+
+                <!-- Analyze Button -->
+                {% if filename %}
+                <div class="analyze-section">
+                    <form method="get" action="{{ url_for('sequence_prediction', filename=filename) }}" class="analyze-form">
+                        <button type="submit" class="btn btn-analyze" id="analyzeBtn">
+                            <i class="fas fa-search"></i>
+                            <span>Analyze Video</span>
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Results Section -->
+            <div class="card results-section" id="resultsSection" {% if not prediction %}style="display: none;"{% endif %}>
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+                </div>
+                <div class="result-content">
+                    {% if prediction %}
+                    <div class="result-badge {% if prediction == 'REAL' %}result-real{% else %}result-fake{% endif %}">
+                        <div class="result-icon">
+                            {% if prediction == 'REAL' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="result-text">
+                            <h3 class="result-label">{{ prediction }}</h3>
+                            <p class="result-description">
+                                {% if prediction == 'REAL' %}
+                                    This video appears to be authentic and unmanipulated.
+                                {% else %}
+                                    This video has been flagged as potentially manipulated.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="result-placeholder">
+                        <i class="fas fa-hourglass-half"></i>
+                        <p>Upload and analyze a video to see results</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced CNN-RNN hybrid architecture for accurate detection</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>High Accuracy</h3>
+                    <p>~85% test accuracy on DFDC dataset</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Fast Processing</h3>
+                    <p>Results in approximately 1 minute per 10-second video</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 DeepFake Detection System. Built with <i class="fas fa-heart"></i> using Flask & TensorFlow</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Analyzing video...</p>
+            <p class="loading-hint">This may take a minute</p>
+        </div>
+    </div>
+
+    <script>
+        // File input styling
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.querySelector('.file-text');
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name || 'Choose Video File';
+                fileLabel.textContent = fileName;
+            });
+        }
+
+        // Show loading overlay on analyze
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', function() {
+                loadingOverlay.style.display = 'flex';
+            });
+        }
+
+        // Result color styling
+        const resultSection = document.getElementById('resultsSection');
+        {% if prediction %}
+        if (resultSection) {
+            resultSection.style.display = 'block';
+        }
+        {% endif %}
+
+        // Form submission handling
+        const uploadForm = document.getElementById('uploadForm');
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', function(e) {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files.length) {
+                    e.preventDefault();
+                    alert('Please select a video file to upload.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
