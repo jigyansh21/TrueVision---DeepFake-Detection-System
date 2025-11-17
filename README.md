@@ -1,4 +1,4 @@
-# 🔍 DeepFake Detection System
+# TrueVision — DeepFake Detection System
 
 <div align="center">
 
@@ -7,355 +7,206 @@
 ![Flask](https://img.shields.io/badge/Flask-2.2-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**An advanced deep learning system for detecting deepfake videos using CNN-RNN hybrid architecture**
-
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [Results](#-results)
+**Production-ready deepfake video screening powered by hybrid CNN–RNN models**
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Project Structure](#-project-structure)
-- [Models](#-models)
-- [Dataset](#-dataset)
-- [Results](#-results)
-- [Limitations](#-limitations)
-- [Technologies Used](#-technologies-used)
-- [Contributing](#-contributing)
-- [Team](#-team)
-- [License](#-license)
-
----
-
-## 🎯 Overview
-
-DeepFake Detection System is a machine learning project that identifies manipulated videos created using deepfake technology. The system uses a combination of Convolutional Neural Networks (CNN) and Recurrent Neural Networks (RNN) to analyze video frames and classify them as **REAL** or **FAKE** with high accuracy.
-
-### What are DeepFakes?
-
-DeepFakes are synthetic media created using artificial intelligence, where a person's face is replaced with someone else's face in an existing image or video. These are typically generated using Generative Adversarial Networks (GANs) and pose significant risks including:
-
-- 🚨 **Fake News**: Spreading misinformation through manipulated videos
-- 🎭 **Celebrity Impersonation**: Creating unauthorized content featuring public figures
-- 💰 **Financial Fraud**: Using deepfakes for fraudulent activities
-- 🗳️ **Political Manipulation**: Influencing public opinion with fake political content
+- [Overview](#overview)
+- [Key Capabilities](#key-capabilities)
+- [System Architecture](#system-architecture)
+- [Getting Started](#getting-started)
+- [Operation Guide](#operation-guide)
+- [Project Layout](#project-layout)
+- [Models & Training](#models--training)
+- [Dataset](#dataset)
+- [Evaluation](#evaluation)
+- [Limitations & Roadmap](#limitations--roadmap)
+- [Technology Stack](#technology-stack)
+- [Contributing](#contributing)
+- [Maintainers](#maintainers)
+- [License & Support](#license--support)
 
 ---
 
-## ✨ Features
+## Overview
 
-- 🎥 **Video Analysis**: Upload and analyze video files for deepfake detection
-- 🧠 **Hybrid Architecture**: Combines CNN for feature extraction and RNN for temporal analysis
-- 📊 **High Accuracy**: Achieves ~85% test accuracy on DFDC dataset
-- 🚀 **Real-time Processing**: Fast analysis (approximately 1 minute for a 10-second 30fps video)
-- 🎨 **Modern Web Interface**: User-friendly dashboard for video upload and analysis
-- 🔍 **Frame-by-Frame Analysis**: Detects subtle imperfections in facial features
-- 📈 **Multiple Model Support**: Supports various CNN architectures (EfficientNet, InceptionV3, ResNet)
+TrueVision is a deep learning system that detects manipulated (deepfake) videos by combining frame-level convolutional encoders with sequence-aware GRU layers. The pipeline ingests uploaded clips, isolates faces, extracts discriminative embeddings, and classifies each video as **REAL** or **FAKE** in under a minute for a typical 10-second sequence. The solution is packaged as a Flask web application with an opinionated training stack for reproducibility.
 
 ---
 
-## 🏗️ Architecture
+## Key Capabilities
 
-### System Pipeline
-
-The detection pipeline consists of the following steps:
-
-1. **Video Loading**: Load input video file
-2. **Frame Extraction**: Extract all frames from the video
-3. **Face Detection**: Identify and crop face regions from each frame
-4. **Feature Extraction**: Use pre-trained CNN models to extract features
-5. **Temporal Analysis**: Apply RNN (GRU) to analyze temporal patterns
-6. **Classification**: Classify video as REAL or FAKE
-
-### Model Architecture
-
-#### CNN-RNN Hybrid Model
-
-The best-performing model combines:
-
-- **CNN Backbone**: EfficientNetB2 or InceptionV3 (pre-trained on ImageNet)
-- **RNN Layer**: GRU (Gated Recurrent Unit) for sequence modeling
-- **Output**: Binary classification (REAL/FAKE)
-
-**Key Hyperparameters:**
-- Optimizer: Adam
-- Loss Function: Sparse Categorical Crossentropy
-- Metric: Accuracy
-
-### Workflow Diagrams
-
-#### Pre-processing Workflow
-```
-Video Input → Frame Extraction → Face Detection → Face Cropping → Feature Extraction
-```
-
-#### Prediction Workflow
-```
-Extracted Features → CNN Feature Vectors → GRU Sequence Analysis → Classification → Result
-```
+- **Automated Video Screening** – Upload MP4/AVI/MOV assets and receive binary authenticity verdicts.
+- **Hybrid CNN–RNN Modeling** – EfficientNetB2 or InceptionV3 feature extractors coupled with GRU layers for temporal reasoning.
+- **Operational Accuracy** – ~85 % accuracy on DFDC samples with strong precision on FAKE predictions.
+- **Responsive UI** – Streamlined dashboard for file uploads, processing status, and classification results.
+- **Multi-model Support** – Plug-and-play with alternative CNN backbones or retrained weights.
+- **Deployment-focused** – Includes pre-built virtual-environment guidance, model storage, and inference scripts.
 
 ---
 
-## 🚀 Installation
+## System Architecture
+
+1. **Ingestion** – Video file uploads through the Flask interface or API endpoints.
+2. **Frame Processing** – Frame extraction followed by OpenCV-based face localization and cropping.
+3. **Feature Extraction** – TimeDistributed EfficientNetB2/InceptionV3 generates frame embeddings.
+4. **Temporal Modeling** – GRU layers capture cross-frame dynamics; dropout mitigates overfitting.
+5. **Classification** – Dense layers output REAL/FAKE probabilities with softmax activation.
+6. **Presentation** – Results rendered in the UI with associated metadata and logs.
+
+> Pre-processing flow: `Video → Frames → Face Detection → Cropping → CNN Embeddings`  
+> Prediction flow: `Embeddings → GRU Sequence Modeling → Dense Classification → Verdict`
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Python 3.9 or higher
-- pip package manager
-- GPU (recommended for faster processing)
+- Python 3.9+
+- pip
+- CUDA-enabled GPU (recommended)
 
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/DeepFake_Detection.git
-cd DeepFake_Detection-main
-```
-
-### Step 2: Install Dependencies
+### Installation
 
 ```bash
-cd Deploy
+git clone https://github.com/jigyansh21/TrueVision---DeepFake-Detection-System.git
+cd TrueVision---DeepFake-Detection-System/Deploy
 pip install -r requirements.txt
 ```
 
-**Note**: The original `requirments.txt` file has been corrected to `requirements.txt` with proper package versions.
+> Troubleshooting dlib: install the matching wheel from `Deploy/Dlib-python whl packages/` if the default build fails.
 
-**Note**: If you encounter issues with `dlib`, install the appropriate wheel file from `Deploy/Dlib-python whl packages/` based on your Python version:
+### Model Weights
 
-```bash
-pip install Dlib-python\ whl\ packages/dlib-19.22.99-cp39-cp39-win_amd64.whl
-```
-
-### Step 3: Download Model Weights
-
-Ensure the model file `inceptionNet_model.h5` is present in `Deploy/models/` directory.
+Ensure `Deploy/models/inceptionNet_model.h5` is present. Replace with retrained weights if needed (see `Model_Training_Colab.ipynb`).
 
 ---
 
-## 💻 Usage
+## Operation Guide
 
-### Running the Application
-
-1. **Navigate to the Deploy directory:**
+1. Start the server:
    ```bash
    cd Deploy
-   ```
-
-2. **Start the Flask server:**
-   ```bash
    python app.py
    ```
+2. Navigate to `http://localhost:5000`.
+3. Upload a video (≤16 MB recommended) and select **Analyze**.
+4. Review the REAL/FAKE classification and console logs for troubleshooting.
 
-3. **Access the web interface:**
-   - Open your browser and navigate to `http://localhost:5000`
-   - Upload a video file (MP4 format recommended)
-   - Click "Analyze" to process the video
-   - View the classification result (REAL or FAKE)
-
-### Supported Video Formats
-
-- MP4 (recommended)
-- AVI
-- MOV
-- Other formats supported by OpenCV
-
-### Video Requirements
-
-- Maximum file size: 16 MB (configurable)
-- Recommended: Videos with clear face visibility
-- Best results: Single face per frame, well-lit environment
+Supported formats: MP4 (preferred), AVI, MOV, or any format compatible with OpenCV. For best accuracy, provide well-lit videos with a clear view of a single face.
 
 ---
 
-## 📁 Project Structure
+## Project Layout
 
 ```
-DeepFake_Detection-main/
-│
-├── Deploy/                    # Deployment files
-│   ├── app.py                 # Flask application
-│   ├── models/                # Trained model files
+TrueVision---DeepFake-Detection-System/
+├── Deploy/                     # Flask app, inference scripts, dependencies
+│   ├── app.py
+│   ├── models/
 │   │   └── inceptionNet_model.h5
-│   ├── static/                # Static files
-│   │   └── uploads/             # Uploaded videos
-│   ├── templates/             # HTML templates
-│   │   ├── upload.html        # Main dashboard
-│   │   └── upload.css         # Stylesheet
-│   └── requirements.txt       # Python dependencies
-│
-├── Pre-Processing/            # Data preprocessing notebooks
-│   └── DeepFake_Detection_Pre-Processing.ipynb
-│
-├── Model Training/            # Model training scripts
-│
-├── Saved Models/              # Additional saved models
-│   └── models/
-│       └── CNN_RNN/
-│
-├── Dataset/                   # Dataset information
-│   └── Readme.md
-│
-└── README.md                  # This file
+│   ├── static/ and templates/  # UI assets
+│   └── Dlib-python whl packages/
+├── Pre-Processing/             # Face extraction & cleaning notebooks
+├── Model Training/             # Training descriptors
+├── Model_Training_Colab.ipynb  # Colab notebook for retraining
+├── Saved Models/               # Additional CNN-RNN checkpoints
+└── README.md
 ```
 
 ---
 
-## 🤖 Models
+## Models & Training
 
-### Tested Architectures
+- **CNN-only baselines**: MesoNet, ResNet50, EfficientNetB0 (frame classification).
+- **Hybrid models**:
+  - *InceptionV3 + GRU*: ~82 % accuracy; excels on single-face clips.
+  - *EfficientNetB2 + GRU*: ~85 % accuracy; preferred production model.
 
-#### 1. CNN-Only Models
-
-**MesoNet**
-- Pre-trained for deepfake image detection
-- Limited performance on video frames
-
-**ResNet50**
-- Trained on deepfake images cropped from videos
-- ImageNet pre-trained weights
-
-**EfficientNetB0**
-- Trained on deepfake images cropped from videos
-- ImageNet pre-trained weights
-
-#### 2. CNN-RNN Hybrid Models
-
-**InceptionV3 + GRU**
-- Test Accuracy: ~82%
-- Good performance on single-face videos
-- Limitation: Struggles with multiple faces
-
-**EfficientNetB2 + GRU** ⭐ (Best Performance)
-- Test Accuracy: ~85%
-- Excellent feature extraction capabilities
-- Limitation: Reduced accuracy in dark backgrounds
+Training configuration (see Colab notebook):
+- Frames per video: 30
+- Batch size: 8 (adjust by GPU memory)
+- Optimizer: Adam (1e-4)
+- Loss: Sparse categorical cross-entropy
+- Callbacks: ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 
 ---
 
-## 📊 Dataset
+## Dataset
 
-The project uses the **DeepFake Detection Challenge (DFDC) Dataset** from Kaggle.
+Reference dataset: [DeepFake Detection Challenge (DFDC) – Kaggle](https://www.kaggle.com/competitions/deepfake-detection-challenge/data)
 
-- **Dataset Link**: [DFDC on Kaggle](https://www.kaggle.com/competitions/deepfake-detection-challenge/data)
-- **Training Data**: 400 videos (MP4 format)
-- **Test Data**: 400 videos (MP4 format)
+- Training set: 400 MP4 videos
+- Test set: 400 MP4 videos
+- Metadata fields: `filename`, `label` (0=REAL,1=FAKE), `original`, `split`
 
-### Dataset Metadata
-
-- `filename`: Video filename
-- `label`: Classification label (0 = REAL, 1 = FAKE)
-- `original`: Original video name (for FAKE videos)
-- `split`: Dataset split identifier
+Replace these samples with your internal corpus as needed; ensure metadata follows the same schema.
 
 ---
 
-## 📈 Results
+## Evaluation
 
-### Performance Metrics
+| Model                | Architecture | Accuracy | Notes                                   |
+|----------------------|-------------|----------|-----------------------------------------|
+| MesoNet              | CNN         | Low      | Image-focused, weak temporal reasoning   |
+| ResNet50             | CNN         | Moderate | Frame-level only                         |
+| EfficientNetB0       | CNN         | Moderate | Frame-level only                         |
+| InceptionV3 + GRU    | CNN-RNN     | ~82 %    | Sensitive to multi-face sequences        |
+| **EfficientNetB2 + GRU** | **CNN-RNN** | **~85 %** | **Preferred deployment model**           |
 
-- **Test Accuracy**: ~85% (EfficientNetB2 + GRU)
-- **Processing Time**: ~1 minute for 10-second video (30 fps)
-- **Precision**: High precision for FAKE video detection
-
-### Model Comparison
-
-| Model | Architecture | Accuracy | Notes |
-|-------|-------------|----------|-------|
-| MesoNet | CNN | Low | Good for images, poor for videos |
-| ResNet50 | CNN | Moderate | Frame-level analysis |
-| EfficientNetB0 | CNN | Moderate | Frame-level analysis |
-| InceptionV3 + GRU | CNN-RNN | ~82% | Good for single-face videos |
-| **EfficientNetB2 + GRU** | **CNN-RNN** | **~85%** | **Best overall performance** |
+- Processing time: ≈60 s for a 10 s clip (30 fps) on GPU
+- Precision: High for FAKE class; monitor recall on low-light footage
 
 ---
 
-## ⚠️ Limitations
+## Limitations & Roadmap
 
-1. **Multiple Faces**: Reduced accuracy when multiple faces are present in the video
-2. **Dark Backgrounds**: Difficulty detecting faces in poorly lit environments
-3. **Video Quality**: Performance may degrade with low-resolution or heavily compressed videos
-4. **Real-time Processing**: Current implementation requires video upload (not real-time streaming)
+1. **Multiple faces** – Accuracy drops when several faces appear simultaneously.
+2. **Low-light / occlusions** – Detection quality degrades on poorly lit videos.
+3. **Video quality** – Heavy compression reduces feature fidelity.
+4. **Streaming** – Current implementation handles uploaded files only; no live ingestion.
 
----
-
-## 🛠️ Technologies Used
-
-### Backend
-- **Python 3.9+**: Core programming language
-- **Flask 2.2**: Web framework
-- **TensorFlow**: Deep learning framework
-- **OpenCV (cv2)**: Computer vision and video processing
-- **NumPy**: Numerical computations
-- **face_recognition**: Face detection and recognition
-- **imageio**: Image and video I/O
-
-### Frontend
-- **HTML5**: Markup language
-- **CSS3**: Styling
-- **JavaScript**: Client-side interactivity
-
-### Machine Learning
-- **TensorFlow/Keras**: Model training and inference
-- **Pre-trained Models**: EfficientNet, InceptionV3, ResNet
-- **GRU**: Recurrent neural network layer
+Planned enhancements: MediaPipe face detection, ONNX/TFLite export for edge inference, and multi-face consensus logic.
 
 ---
 
-## 🤝 Contributing
+## Technology Stack
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Contribution Guidelines
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- **Backend**: Python 3.9+, Flask 2.2, TensorFlow/Keras, NumPy, OpenCV, imageio
+- **Frontend**: HTML5, CSS3, vanilla JavaScript
+- **ML Ops**: Google Colab training notebook, SavedModel/H5 artifacts, optional dlib wheels
 
 ---
 
-## 👥 Team
+## Contributing
 
-This project was developed by:
+Contributions are welcome via pull requests. Please open an issue to discuss significant changes before implementation.
 
-1. **[Balaji Kartheek](https://github.com/Balaji-Kartheek)** - Project Lead
-2. **[Aaron Dsouza](https://github.com/DsouzaAaron)** - Co-developer
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/your-feature`.
+3. Commit with descriptive messages.
+4. Push and open a pull request against `main`.
 
 ---
 
-## 🙏 Acknowledgments
+## Maintainers
 
-- DeepFake Detection Challenge (DFDC) for providing the dataset
-- TensorFlow team for the deep learning framework
-- OpenCV community for computer vision tools
-- All contributors and open-source libraries used in this project
+- **Jigyansh** – Lead Developer
+- **Nikhil Joshi** – Co-developer
 
 ---
 
-## 📞 Contact & Support
+## License & Support
 
-For questions, issues, or contributions, please open an issue on GitHub or contact the project maintainers.
-
----
+Licensed under the MIT License. For questions or support, open an issue in this repository or contact the maintainers via GitHub.
 
 <div align="center">
 
-**⭐ If you find this project useful, please consider giving it a star! ⭐**
-
-Made with ❤️ by the DeepFake Detection Team
+If TrueVision helps your workflow, please consider starring the project.
 
 </div>
